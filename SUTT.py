@@ -1,7 +1,7 @@
 import pandas as pd
 
 def branch_sin(br1):
-    global branch1
+    branch1 = ''
     if br1 == 'AA':
         branch1 = 'ECE'
     elif br1 == 'AB':
@@ -23,7 +23,7 @@ def branch_sin(br1):
     return branch1
 
 def branch_du(br2):
-    global branch2
+    branch2 = ''
     if br2 == 'B1':
         branch2 = 'MSc BIO'
     elif br2 == 'B2':
@@ -43,20 +43,23 @@ url = f'https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq?tqx=out:csv&sh
 df = pd.read_csv(url)
 df2 = df.rename(columns={'Name': 'BITS ID', 'BITS ID': 'Name'})
 df3 = df2.to_dict('records')
+
 for i in df3:
     id = i['BITS ID']
     year = id[0:4]
-    eml = id[8:12]
+    mail = id[8:12]
     br = id[4:6]
     check = id[4:5]
-    dual = id[6:8]
+    ps = id[6:8]
+    
     if check == 'A':
         b = branch_sin(br)
-    elif check == 'B' and dual == 'PS':
+    elif check == 'B' and ps == 'PS':
         b = branch_du(br)
-    elif check == 'B' and dual != 'PS':
-        b = (branch_sin(br) + ' + ' + branch_du(dual))
-    i['Email'] = f'f{year}{eml}@pilani.bits-pilani.ac.in'
+    elif check == 'B' and ps != 'PS':
+        b = (branch_du(br) + ' + ' + branch_sin(ps))
+        
+    i['Email'] = f'f{year}{mail}@pilani.bits-pilani.ac.in'
     i['Branch'] = b
+    
 print(df3)
-
